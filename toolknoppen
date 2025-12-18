@@ -1,15 +1,14 @@
-// toolknoppen.js
 (function () {
   "use strict";
 
-  const DEFAULT_TOOLS = [
-    { href: "/rekentools/balklaag-berekenen",        title: "🪵 Balklaag berekenen",        sub: "Eurocode 5 • hout" },
-    { href: "/rekentools/stalen-ligger-berekenen",   title: "🏗️ Stalen ligger berekenen",  sub: "Eurocode 3 • staal" },
-    { href: "/rekentools/stempelplan-berekenen",     title: "🧱 Stempelplan berekenen",    sub: "Ondersteuning • praktijk" },
-    { href: "/rekentools/windbelasting-berekenen",   title: "💨 Windbelasting berekenen",  sub: "Eurocode 1 • wind" }
+  const tools = [
+    { href: "/rekentools/balklaag-berekenen",      title: "🪵 Balklaag berekenen",       sub: "Eurocode 5 • hout" },
+    { href: "/rekentools/stalen-ligger-berekenen", title: "🏗️ Stalen ligger berekenen", sub: "Eurocode 3 • staal" },
+    { href: "/rekentools/stempelplan-berekenen",   title: "🧱 Stempelplan berekenen",   sub: "Ondersteuning • praktijk" },
+    { href: "/rekentools/windbelasting-berekenen", title: "💨 Windbelasting berekenen", sub: "Eurocode 1 • wind" }
   ];
 
-  function buildCard(tools) {
+  function buildCard() {
     const card = document.createElement("div");
     card.className = "balkcalc-card toolknoppen-card";
 
@@ -34,47 +33,22 @@
     return card;
   }
 
-  function insertCard(targetEl, insert) {
-    if (!targetEl) return false;
-
-    // voorkom dubbel plaatsen
-    if (targetEl.querySelector(".toolknoppen-card")) return true;
-
-    const card = buildCard(DEFAULT_TOOLS);
-
-    // insert opties
-    if (insert === "before-first-card") {
-      const firstCard = targetEl.querySelector(".balkcalc-card");
-      if (firstCard) {
-        targetEl.insertBefore(card, firstCard);
-        return true;
-      }
-    }
-
-    if (insert === "top" && targetEl.firstChild) {
-      targetEl.insertBefore(card, targetEl.firstChild);
-      return true;
-    }
-
-    targetEl.appendChild(card);
-    return true;
-  }
-
-  // Public init
-  window.ToolKnoppenInit = function ToolKnoppenInit(opts) {
-    opts = opts || {};
-    const selector = opts.selector || ".toolknoppen";
-    const insert = opts.insert || "bottom";
-
+  function init(selector) {
     document.querySelectorAll(selector).forEach(el => {
-      insertCard(el, insert);
+      if (el.querySelector(".toolknoppen-card")) return; // geen dubbel
+      el.appendChild(buildCard());
     });
-  };
-
-  // Auto-init: als er .toolknoppen op de pagina staat
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", () => window.ToolKnoppenInit({ selector: ".toolknoppen" }));
-  } else {
-    window.ToolKnoppenInit({ selector: ".toolknoppen" });
   }
+
+  // auto-init op .toolknoppen
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => init(".toolknoppen"));
+  } else {
+    init(".toolknoppen");
+  }
+
+  // optioneel: handmatige init
+  window.ToolKnoppenInit = function (opts) {
+    init((opts && opts.selector) || ".toolknoppen");
+  };
 })();
