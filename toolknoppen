@@ -1,66 +1,80 @@
-// =========================
-// Rekentools knoppen (COMPLEET)
-// =========================
-(function addRekentoolsButtons() {
+// toolknoppen.js
+(function () {
+  "use strict";
 
-  const tools = [
-    {
-      href: "/rekentools/balklaag-berekenen",
-      title: "🪵 Balklaag berekenen",
-      sub: "Eurocode 5 • hout"
-    },
-    {
-      href: "/rekentools/stalen-ligger-berekenen",
-      title: "🏗️ Stalen ligger berekenen",
-      sub: "Eurocode 3 • staal"
-    },
-    {
-      href: "/rekentools/stempelplan-berekenen",
-      title: "🧱 Stempelplan berekenen",
-      sub: "Ondersteuning • praktijk"
-    },
-    {
-      href: "/rekentools/windbelasting-berekenen",
-      title: "💨 Windbelasting berekenen",
-      sub: "Eurocode 1 • wind"
-    }
+  const DEFAULT_TOOLS = [
+    { href: "/rekentools/balklaag-berekenen",        title: "🪵 Balklaag berekenen",        sub: "Eurocode 5 • hout" },
+    { href: "/rekentools/stalen-ligger-berekenen",   title: "🏗️ Stalen ligger berekenen",  sub: "Eurocode 3 • staal" },
+    { href: "/rekentools/stempelplan-berekenen",     title: "🧱 Stempelplan berekenen",    sub: "Ondersteuning • praktijk" },
+    { href: "/rekentools/windbelasting-berekenen",   title: "💨 Windbelasting berekenen",  sub: "Eurocode 1 • wind" }
   ];
 
-  // Card container
-  const card = document.createElement("div");
-  card.className = "balkcalc-card";
+  function buildCard(tools) {
+    const card = document.createElement("div");
+    card.className = "balkcalc-card toolknoppen-card";
 
-  const label = document.createElement("label");
-  label.className = "balkcalc-label";
-  label.textContent = "Rekentools";
-  card.appendChild(label);
+    const label = document.createElement("label");
+    label.className = "balkcalc-label";
+    label.textContent = "Rekentools";
+    card.appendChild(label);
 
-  const grid = document.createElement("div");
-  grid.className = "balkcalc-grid balkcalc-g2";
-  card.appendChild(grid);
+    const grid = document.createElement("div");
+    grid.className = "balkcalc-grid balkcalc-g2";
+    card.appendChild(grid);
 
-  // Knoppen
-  tools.forEach(t => {
-    const a = document.createElement("a");
-    a.className = "balkcalc-btn";
-    a.href = t.href;
-    a.setAttribute("role", "button");
-    a.innerHTML = `
-      ${t.title}
-      <span class="balkcalc-btnSub">${t.sub}</span>
-    `;
-    grid.appendChild(a);
-  });
+    tools.forEach(t => {
+      const a = document.createElement("a");
+      a.className = "balkcalc-btn";
+      a.href = t.href;
+      a.setAttribute("role", "button");
+      a.innerHTML = `${t.title}<span class="balkcalc-btnSub">${t.sub}</span>`;
+      grid.appendChild(a);
+    });
 
-  // Plaatsing: onder header, boven eerste calculator-card
-  const wrap = root.querySelector(".balkcalc-wrap");
-  const header = wrap.querySelector(".balkcalc-center");
-  const firstCard = wrap.querySelector(".balkcalc-card");
-
-  if (wrap && firstCard) {
-    wrap.insertBefore(card, firstCard);
-  } else if (wrap) {
-    wrap.appendChild(card);
+    return card;
   }
 
+  function insertCard(targetEl, insert) {
+    if (!targetEl) return false;
+
+    // voorkom dubbel plaatsen
+    if (targetEl.querySelector(".toolknoppen-card")) return true;
+
+    const card = buildCard(DEFAULT_TOOLS);
+
+    // insert opties
+    if (insert === "before-first-card") {
+      const firstCard = targetEl.querySelector(".balkcalc-card");
+      if (firstCard) {
+        targetEl.insertBefore(card, firstCard);
+        return true;
+      }
+    }
+
+    if (insert === "top" && targetEl.firstChild) {
+      targetEl.insertBefore(card, targetEl.firstChild);
+      return true;
+    }
+
+    targetEl.appendChild(card);
+    return true;
+  }
+
+  // Public init
+  window.ToolKnoppenInit = function ToolKnoppenInit(opts) {
+    opts = opts || {};
+    const selector = opts.selector || ".toolknoppen";
+    const insert = opts.insert || "bottom";
+
+    document.querySelectorAll(selector).forEach(el => {
+      insertCard(el, insert);
+    });
+  };
+
+  // Auto-init: als er .toolknoppen op de pagina staat
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => window.ToolKnoppenInit({ selector: ".toolknoppen" }));
+  } else {
+    window.ToolKnoppenInit({ selector: ".toolknoppen" });
+  }
 })();
