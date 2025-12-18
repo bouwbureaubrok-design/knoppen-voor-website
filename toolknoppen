@@ -1,0 +1,66 @@
+// =========================
+// Rekentools knoppen (COMPLEET)
+// =========================
+(function addRekentoolsButtons() {
+
+  const tools = [
+    {
+      href: "/rekentools/balklaag-berekenen",
+      title: "🪵 Balklaag berekenen",
+      sub: "Eurocode 5 • hout"
+    },
+    {
+      href: "/rekentools/stalen-ligger-berekenen",
+      title: "🏗️ Stalen ligger berekenen",
+      sub: "Eurocode 3 • staal"
+    },
+    {
+      href: "/rekentools/stempelplan-berekenen",
+      title: "🧱 Stempelplan berekenen",
+      sub: "Ondersteuning • praktijk"
+    },
+    {
+      href: "/rekentools/windbelasting-berekenen",
+      title: "💨 Windbelasting berekenen",
+      sub: "Eurocode 1 • wind"
+    }
+  ];
+
+  // Card container
+  const card = document.createElement("div");
+  card.className = "balkcalc-card";
+
+  const label = document.createElement("label");
+  label.className = "balkcalc-label";
+  label.textContent = "Rekentools";
+  card.appendChild(label);
+
+  const grid = document.createElement("div");
+  grid.className = "balkcalc-grid balkcalc-g2";
+  card.appendChild(grid);
+
+  // Knoppen
+  tools.forEach(t => {
+    const a = document.createElement("a");
+    a.className = "balkcalc-btn";
+    a.href = t.href;
+    a.setAttribute("role", "button");
+    a.innerHTML = `
+      ${t.title}
+      <span class="balkcalc-btnSub">${t.sub}</span>
+    `;
+    grid.appendChild(a);
+  });
+
+  // Plaatsing: onder header, boven eerste calculator-card
+  const wrap = root.querySelector(".balkcalc-wrap");
+  const header = wrap.querySelector(".balkcalc-center");
+  const firstCard = wrap.querySelector(".balkcalc-card");
+
+  if (wrap && firstCard) {
+    wrap.insertBefore(card, firstCard);
+  } else if (wrap) {
+    wrap.appendChild(card);
+  }
+
+})();
